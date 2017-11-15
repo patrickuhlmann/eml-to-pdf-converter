@@ -38,7 +38,7 @@ import com.google.common.io.ByteStreams;
  */
 public class ContentTypeCleaner {
 	public static final String DEFAULT_BASETYPE = "text/plain";
-	public static final String DEFAULT_CHARSET = "utf-8";
+	public static String DEFAULT_CHARSET = "utf-8";
 	private static final String DEFAULT_CONTENTTYPE = DEFAULT_BASETYPE + "; charset=\"" + DEFAULT_CHARSET + "\"";
 	private static final Pattern SEMICOLON_SEQUENCE_IN_PARAMS_REGEX = Pattern.compile(";[\\s;]*;");
 	private static final Pattern COLON_AS_PARAM_DELIM_REGEX = Pattern.compile("([^=:]*)(=|:)(.*?(;|\\z))");
@@ -219,8 +219,10 @@ public class ContentTypeCleaner {
 
 				ContentType ctTmp = decodeContentTypeAsQuotedPrintable(contentType);
 				if (parseCharset(ctTmp) != null) {
+					Logger.debug("Charset could be read as: " + ct);
 					ct = ctTmp;
 				} else {
+					Logger.debug("Charset could not be read and therefore is interpreted as: " + ContentTypeCleaner.DEFAULT_CHARSET);
 					ct.setParameter("charset", ContentTypeCleaner.DEFAULT_CHARSET);
 				}
 			}

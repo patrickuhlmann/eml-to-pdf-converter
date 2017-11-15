@@ -52,6 +52,10 @@ Usage: EMLtoPDFConverter [options] [eml-filename]
        Show graphical user interface (other parameters are ignored when using
        this switch).
        Default: false
+    -c, --charset
+       Specify the charset of the mail. This is useful, if the pdf contains
+       bad charactes like squares. For example if it is using iso-8859-1
+       Default: <empty>
     -v, --version
        Print the version number.
        Default: false

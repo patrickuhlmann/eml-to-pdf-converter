@@ -106,7 +106,7 @@ public class MimeMessageConverter {
 	 * Convert an EML file to PDF.
 	 * @throws Exception
 	 */
-	public static void convertToPdf(String emlPath, String pdfOutputPath, boolean hideHeaders, boolean extractAttachments, String attachmentsdir, List<String> extParams) throws Exception {
+	public static void convertToPdf(String emlPath, String pdfOutputPath, boolean hideHeaders, boolean extractAttachments, String attachmentsdir, String charset, List<String> extParams) throws Exception {
 		Logger.info("Start converting %s to %s", emlPath, pdfOutputPath);
 		
 		Logger.debug("Read eml file from %s", emlPath);
@@ -140,7 +140,12 @@ public class MimeMessageConverter {
 				// ignore this error
 			}
 		}
-		
+
+		if (charset != null && !charset.isEmpty()) {
+			ContentTypeCleaner.DEFAULT_CHARSET = charset;
+		}
+
+
 		String sentDateStr = message.getHeader("date", null);
 		
 		/* ######### Parse the mime structure ######### */
@@ -148,7 +153,8 @@ public class MimeMessageConverter {
 
 		Logger.debug("Find the main message body");
 		MimeObjectEntry<String> bodyEntry = MimeMessageParser.findBodyPart(message);
-		String charsetName = bodyEntry.getContentType().getParameter("charset");
+		String charsetName = (charset == null || charset.isEmpty()) ? bodyEntry.getContentType().getParameter("charset") : charset;
+		Logger.info("Charset: " + charsetName);
 
 		Logger.info("Extract the inline images");
 		final HashMap<String, MimeObjectEntry<String>> inlineImageMap = MimeMessageParser.getInlineImageMap(message);

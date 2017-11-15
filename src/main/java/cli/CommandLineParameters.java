@@ -58,6 +58,9 @@ public class CommandLineParameters {
 	
 	@Parameter(names = {"-ad", "--extract-attachments-directory"}, description = "Extract Attachments to this Directory, if this option is not present the directory is besides the pdf as \"<pdf-name>-attachments\".")
 	private String extractAttachmentsDir;
+
+	@Parameter(names = {"-c", "--charset"}, description = "Interprets the eml content in a specified charset")
+	private String charset;
 	
 	@Parameter(names = {"-gui", "--show-graphical-user-interface"}, description = "Show graphical user interface (other parameters are ignored when using this switch).")
 	private boolean gui;
@@ -148,6 +151,14 @@ public class CommandLineParameters {
 
 	public void setExtractAttachmentsDir(String extractAttachmentsDir) {
 		this.extractAttachmentsDir = extractAttachmentsDir;
+	}
+
+	public String getCharset() {
+		return charset;
+	}
+
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
 
 	public boolean isGui() {
