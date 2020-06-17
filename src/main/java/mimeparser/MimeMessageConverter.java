@@ -83,6 +83,10 @@ public class MimeMessageConverter {
 	private static final Pattern IMG_CID_REGEX = Pattern.compile("cid:(.*?)\"", Pattern.DOTALL);
 	private static final Pattern IMG_CID_PLAIN_REGEX = Pattern.compile("\\[cid:(.*?)\\]", Pattern.DOTALL);
 
+	private static final String VIEWPORT_SIZE = "2480x3508";
+	private static final int CONVERSION_DPI = 300;
+	private static final int IMAGE_QUALITY = 100;
+
 	/**
 	 * Execute a command and redirect its output to the standard output.
 	 * @param command list of the command and its parameters
@@ -183,12 +187,8 @@ public class MimeMessageConverter {
 		} else {
 			Logger.debug("No html message body could be found, fall back to text/plain and embed it into a html document");
 
-			// replace \n line breaks with <br>
-			htmlBody = htmlBody.replace("\n", "<br>").replace("\r", "");
-
-			// replace whitespace with &nbsp;
-			htmlBody = htmlBody.replace(" ", "&nbsp;");
-
+			htmlBody = "<div style=\"white-space: pre-wrap\">" + htmlBody.replace("\n", "<br>").replace("\r", "") + "</div>";
+			
 			htmlBody = String.format(HTML_WRAPPER_TEMPLATE, charsetName, htmlBody);
 			if (inlineImageMap.size() > 0) {
 				Logger.debug("Embed the referenced images (cid) using <img src=\"data:image ...> syntax");
@@ -264,9 +264,10 @@ public class MimeMessageConverter {
 		Logger.debug("Write pdf to %s", pdf.getAbsolutePath());
 
 		List<String> cmd = new ArrayList<String>(Arrays.asList("wkhtmltopdf",
-				"--viewport-size", "2480x3508",
+				"--viewport-size", VIEWPORT_SIZE,
 				// "--disable-smart-shrinking",
-				"--image-quality", "100",
+				"--dpi", String.valueOf(CONVERSION_DPI),
+				"--image-quality", String.valueOf(IMAGE_QUALITY),
 				"--encoding", charsetName));
 		cmd.addAll(extParams);
 		cmd.add(tmpHtml.getAbsolutePath());
